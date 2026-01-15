@@ -5,14 +5,71 @@
 This repository provides an automated GitHub Issue-driven development workflow with Claude Code.
 All GitHub content (Issues, commits, PRs) must be written in **native English**.
 
+---
+
+## IMPORTANT: Automatic Workflow (Full-Auto Mode)
+
+**Claude Code MUST automatically execute the following workflow without waiting for user commands.**
+
+### When User Requests a New Feature/Task:
+
+1. **IMMEDIATELY create a GitHub Issue** using `gh issue create`
+   - Title and body in native English
+   - Apply appropriate labels
+
+2. **Create a feature branch** linked to the Issue
+   - Format: `<type>/<issue-number>-<short-description>`
+
+3. **Save task state** to `.claude/current-task.json`
+
+4. **Implement the feature**
+
+5. **Commit changes** with Conventional Commits format
+   - Always reference Issue number: `(#<issue>)`
+
+6. **When implementation is complete**, automatically:
+   - Push to remote
+   - Create Pull Request with `Closes #<issue>`
+   - Clean up state file
+
+### Automatic Triggers:
+
+| Situation | Action |
+|-----------|--------|
+| User says "implement X" / "add X" / "create X" | → Create Issue + branch, start work |
+| Significant code changes made | → Commit with proper message |
+| Feature implementation complete | → Push + Create PR |
+| User says "done" / "finish" / "complete" | → Finalize PR if not already done |
+
+### Do NOT Wait For:
+
+- `/start-task` command - just start automatically
+- `/quick-commit` command - commit when appropriate
+- `/finish-task` command - create PR when done
+
+---
+
 ## Development Workflow
 
-### Issue-Driven Development
+### Issue-Driven Development (Automated)
 
-1. **Start Task**: Use `/start-task` to create an Issue and feature branch
-2. **Development**: Implement the feature with Claude Code assistance
-3. **Commit**: Use `/quick-commit` for intermediate commits
-4. **Finish Task**: Use `/finish-task` to push and create a PR
+```
+User: "Add user authentication"
+         │
+         ▼ [Claude Code automatically]
+    1. gh issue create → Issue #1
+    2. git checkout -b feat/1-user-auth
+    3. Save .claude/current-task.json
+         │
+         ▼ [Implementation]
+    4. Write code
+    5. git commit (Conventional Commits)
+         │
+         ▼ [Completion]
+    6. git push
+    7. gh pr create (Closes #1)
+    8. rm .claude/current-task.json
+```
 
 ### Branch Naming Convention
 
@@ -45,9 +102,9 @@ The current task state is stored in `.claude/current-task.json`:
 ```
 
 This file:
-- Is created by `/start-task`
-- Is read by `/quick-commit` and `/finish-task` for Issue reference
-- Is deleted by `/finish-task` after PR creation
+- Is created when starting a new task
+- Is read for Issue reference during commits/PR
+- Is deleted after PR creation
 - Should be in `.gitignore`
 
 ## Git Rules
@@ -86,13 +143,15 @@ docs(readme): add installation instructions (#56)
 - **PR titles** should match the Issue title
 - **PR body** must include `Closes #<issue-number>`
 
-## Slash Commands
+## Manual Commands (Optional)
+
+These commands are available if you prefer manual control:
 
 | Command | Description |
 |---------|-------------|
-| `/start-task` | Create Issue + branch + state file, start development |
-| `/quick-commit` | Quick commit with auto-generated message (reads state) |
-| `/finish-task` | Commit, push, create PR, clean up state |
+| `/start-task` | Manually create Issue + branch |
+| `/quick-commit` | Manually commit changes |
+| `/finish-task` | Manually create PR |
 
 ## File Structure
 
