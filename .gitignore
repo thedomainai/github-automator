@@ -1,0 +1,9 @@
+# Task state file (session-specific)
+.claude/current-task.json
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

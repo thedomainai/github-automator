@@ -9,7 +9,7 @@
 
 ### Feature Branches
 - Created from `main`
-- Naming: `<type>/#<issue>-<short-description>`
+- Naming: `<type>/<issue>-<short-description>` (no `#` symbol)
 - Deleted after merge
 
 ## Commit Guidelines

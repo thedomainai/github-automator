@@ -7,7 +7,22 @@ allowed-tools: Bash, Read, Glob, Grep
 
 Create a quick commit with an automatically generated message. Follow these steps:
 
-## Step 1: Check Current State
+## Step 1: Load Task State
+
+Read the current task state:
+
+```bash
+cat .claude/current-task.json 2>/dev/null
+```
+
+If the file exists, extract:
+- `issue_number` - for commit message reference
+- `type` - for commit type prefix
+- `branch` - to verify you're on the correct branch
+
+If no state file exists, fall back to extracting from branch name.
+
+## Step 2: Check Current State
 
 ```bash
 git status
@@ -15,9 +30,9 @@ git branch --show-current
 git diff --stat
 ```
 
-Extract the issue number from the branch name (e.g., `feat/#123-description` → `#123`).
+Verify you're on the correct branch (should match state file).
 
-## Step 2: Analyze Changes
+## Step 3: Analyze Changes
 
 Review what files have changed and understand the nature of changes:
 
@@ -25,9 +40,9 @@ Review what files have changed and understand the nature of changes:
 git diff
 ```
 
-## Step 3: Determine Commit Type
+## Step 4: Determine Commit Type
 
-Based on the changes, determine:
+Based on the changes (or use type from state file):
 - `feat` - New feature or functionality
 - `fix` - Bug fix
 - `docs` - Documentation changes
@@ -36,12 +51,12 @@ Based on the changes, determine:
 - `chore` - Maintenance tasks
 - `style` - Formatting, no code change
 
-## Step 4: Generate Commit Message
+## Step 5: Generate Commit Message
 
 Create a commit message following Conventional Commits:
 
 ```
-<type>(<scope>): <short description in imperative mood> (#<issue>)
+<type>(<scope>): <short description in imperative mood> (#<issue_number>)
 ```
 
 **Rules for the message:**
@@ -49,7 +64,7 @@ Create a commit message following Conventional Commits:
 - Use imperative mood ("add" not "added")
 - Keep under 72 characters
 - Be specific but concise
-- Reference the issue number
+- Reference the issue number from state file
 
 **Good examples:**
 - `feat(auth): add password reset endpoint (#12)`
@@ -60,7 +75,7 @@ Create a commit message following Conventional Commits:
 - `fixed bug` (no type, no scope, no issue)
 - `feat: added new feature` (past tense, vague)
 
-## Step 5: Execute Commit
+## Step 6: Execute Commit
 
 ```bash
 git add -A
@@ -69,11 +84,12 @@ git commit -m "<generated message>
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
-## Step 6: Confirm to User
+## Step 7: Confirm to User
 
 Report:
 1. Files committed
 2. Commit message used
 3. Commit hash
+4. Issue reference (#<number>)
 
 Now proceed with these steps.

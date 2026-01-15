@@ -80,12 +80,14 @@ feat(auth): implement JWT validation (#12)
 ## Branch Naming
 
 ```
-<type>/#<issue>-<short-description>
+<type>/<issue>-<short-description>
 ```
+
+**Note**: No `#` symbol (causes shell issues).
 
 **Example:**
 ```
-feat/#1-user-authentication
+feat/1-user-authentication
 ```
 
 ## Project Structure
